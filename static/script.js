@@ -5,48 +5,46 @@ let savedpastresponse = []; // Variable to store the message
 const messagesContainer = document.getElementById('messages-container');
 const messageForm = document.getElementById('message-form');
 const messageInput = document.getElementById('message-input');
-//
 
-//Section: function to creat the dialogue window
+// Section: function to create the dialogue window
 const addMessage = (message, role, imgSrc) => {
-  // creat elements in the dialogue window
   const messageElement = document.createElement('div');
   const textElement = document.createElement('p');
   messageElement.className = `message ${role}`;
   const imgElement = document.createElement('img');
-  imgElement.src = `${imgSrc}`;
-  // append the image and message to the message element
+  imgElement.src = imgSrc;
+
+  // Append the image and message to the message element
   messageElement.appendChild(imgElement);
   textElement.innerText = message;
   messageElement.appendChild(textElement);
   messagesContainer.appendChild(messageElement);
-  // creat the ending of the message
-  var clearDiv = document.createElement("div");
+
+  // Create the ending of the message
+  const clearDiv = document.createElement("div");
   clearDiv.style.clear = "both";
   messagesContainer.appendChild(clearDiv);
 };
-//
 
-
-//Section: Calling the model
+// Section: Calling the model
 const sendMessage = async (message) => {
-  // addMessage(message, 'user','user.jpeg');
-  addMessage(message, 'user','../static/user.jpeg');
+  addMessage(message, 'user', '../static/user.jpeg');
+
   // Loading animation
   const loadingElement = document.createElement('div');
-  const loadingtextElement = document.createElement('p');
+  const loadingTextElement = document.createElement('p');
   loadingElement.className = `loading-animation`;
-  loadingtextElement.className = `loading-text`;
-  loadingtextElement.innerText = 'Loading....Please wait';
+  loadingTextElement.className = `loading-text`;
+  loadingTextElement.innerText = 'Loading....Please wait';
   messagesContainer.appendChild(loadingElement);
-  messagesContainer.appendChild(loadingtextElement);
+  messagesContainer.appendChild(loadingTextElement);
 
   async function makePostRequest(msg) {
-    const url = 'www.example.com';  // Make a POST request to this url
+    const url = 'http://127.0.0.1:5000/chatbot'; // Update to the correct endpoint
     const requestBody = {
       prompt: msg
     };
-  
+
     try {
       const response = await fetch(url, {
         method: 'POST',
@@ -55,46 +53,36 @@ const sendMessage = async (message) => {
         },
         body: JSON.stringify(requestBody)
       });
-  
-      const data = await response.text();
-      // Handle the response data here
-      console.log(data);
+
+      // Parse the response as JSON
+      const data = await response.json();
       return data;
     } catch (error) {
-      // Handle any errors that occurred during the request
       console.error('Error:', error);
-      return error
+      return { error: "Failed to connect to the server." };
     }
   }
-  
-  var res = await makePostRequest(message);
-  
-  data = {"response": res};
-  
+
+  const data = await makePostRequest(message);
+
   // Deleting the loading animation
-  const loadanimation = document.querySelector('.loading-animation');
-  const loadtxt = document.querySelector('.loading-text');
-  loadanimation.remove();
-  loadtxt.remove();
+  const loadAnimation = document.querySelector('.loading-animation');
+  const loadText = document.querySelector('.loading-text');
+  if (loadAnimation) loadAnimation.remove();
+  if (loadText) loadText.remove();
 
   if (data.error) {
     // Handle the error here
-    const errorMessage = JSON.stringify(data);
-    // addMessage(errorMessage, 'error','Error.png');
-    addMessage(errorMessage, 'error','../static/Error.png');
+    const errorMessage = data.error;
+    addMessage(errorMessage, 'error', '../static/Error.png');
   } else {
     // Process the normal response here
     const responseMessage = data['response'];
-    // addMessage(responseMessage, 'aibot','Bot_logo.png');
-    addMessage(responseMessage, 'aibot','../static/Bot_logo.png');
+    addMessage(responseMessage, 'aibot', '../static/Bot_logo.png');
   }
-  
-  //!!!!! code to  save the content in history
-  //
 };
-//
 
-//Section: Button to submit to the model and get the response
+// Section: Button to submit to the model and get the response
 messageForm.addEventListener('submit', async (event) => {
   event.preventDefault();
   const message = messageInput.value.trim();
