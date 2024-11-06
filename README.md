@@ -25,3 +25,33 @@ Proyek ini mengimplementasikan chatbot berbasis web yang memungkinkan pengguna b
    ```bash
    git clone <URL_REPOSITORI>
    cd <NAMA_REPOSITORI>
+
+2. **Install Dependensi**
+   ```bash
+   pip install -r requirements.txt
+
+3. **Unduh Model Model /facebook/blenderbot-400M-distill akan otomatis diunduh saat pertama kali menjalankan kode**
+
+4. **Jalankan Server Flask**
+   ```bash
+   flask run
+
+5. **Struktur Proyek**
+   
+- app.py: File utama server untuk API dan pemrosesan model.
+- templates/index.html: Halaman utama antarmuka chatbot.
+- static/css/style.css: File CSS untuk desain tampilan.
+- static/script.js: File JavaScript untuk pengaturan frontend dan pengiriman pesan ke server Flask.
+
+6. **Cara Penggunaan**
+   
+- Masukkan pesan di kolom input dan tekan "Enter" atau tombol kirim untuk mengirim pesan.Bot akan memberikan respons di bawah pesan Anda.
+
+7. **API Endpoint**
+- GET /: Menampilkan antarmuka utama chatbot.
+- POST /chatbot: Menerima input pengguna, memprosesnya dengan model chatbot, dan mengembalikan respons.
+
+8. **Troubleshooting**
+    
+- 405 Method Not Allowed: Pastikan Anda mengirimkan POST request ke /chatbot dan server Flask sedang berjalan.
+- Respons Tidak Relevan atau Berulang: Coba sesuaikan parameter model seperti max_length, temperature, top_p, atau top_k di app.py untuk meningkatkan kualitas respons.
